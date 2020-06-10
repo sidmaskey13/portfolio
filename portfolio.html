@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My Portfolio</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="css/style.css">
+
+</head>
+<body>
+
+<div id="loadingMessage" class="main"><img src="loading.gif" alt=""><br>Loading</div>
+
+
+
+<div id="main" class="mainContainer" hidden>
+    <div class="row">
+        <div class="col-md-4">
+                <img id="profileImage" height="100px" width="100px">
+                <h2 id="fullName"></h2>
+                <p id="bio"></p>
+                <p id="totalFollowers"></p>
+            <p id="totalProjects"></p>
+
+        </div>
+        <div class="col-md-8">
+            <b>My Projects</b>
+            <button onclick="buttonClickNext()">Next</button>
+            <button onclick="buttonClickPrev()">Prev</button>
+            <i id="perPage"></i>
+            <div id="allProjectsList"></div>
+        </div>
+    </div>
+</div>
+<div class="footer">Check me on <a id="githubLink">Github</a></div>
+
+
+<script type="text/javascript">
+    var userName = 'fabpot'
+    var allProjectsListContainer = document.getElementById("allProjectsList");
+    var pageNumber = 1;
+    var perPage = 3;
+    document.getElementById('perPage').textContent = 'Per Page Show:' + perPage
+
+
+
+    fetch("https://api.github.com/users/"+userName)
+        .then(res => res.json())
+        .then(function (data) {
+            let followersCount = data['followers']
+            let followersInfo = `Followers: ${followersCount}`
+            document.getElementById('profileImage').src = data['avatar_url']
+            document.getElementById('fullName').textContent = data['name']
+            document.getElementById('bio').textContent = data['bio']
+            document.getElementById('totalFollowers').textContent = followersInfo
+            document.getElementById('totalProjects').textContent = data['public_repos']
+            document.getElementById('githubLink').href = data['html_url']
+            document.getElementById('main').hidden = false
+            document.getElementById('loadingMessage').hidden = true
+            getProjectList()
+        })
+
+
+
+
+    function getProjectList() {
+        var allProjectsList = '';
+        fetch('https://api.github.com/users/'+userName+'/repos?page='+pageNumber+'&per_page='+perPage)
+            .then(res => res.json())
+            .then(function (data) {
+                for (var i = 0; i < data.length; i++) {
+                    allProjectsList += '<a href=' + data[i].html_url + '><div class="card"><div class="cardContainer"><h4><b>' + data[i].name + '</b></h4><span class="w3-tag">'+ data[i].language +'</span></div></div></a>';
+                }
+                allProjectsListContainer.innerHTML = allProjectsList
+            })
+    }
+
+    function buttonClickNext() {
+        ++pageNumber
+        getProjectList()
+    }
+    function buttonClickPrev() {
+        --pageNumber
+        getProjectList()
+    }
+
+
+
+</script>
+</body>
+</html>
