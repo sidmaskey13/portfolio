@@ -42,25 +42,24 @@
     var pageNumber = 1;
     var perPage = 2;
     document.getElementById('perPage').textContent = 'Per Page Show:' + perPage
-
-
-
+    
     fetch("https://api.github.com/users/"+userName)
         .then(res => res.json())
         .then(function (data) {
-            document.getElementById('profileImage').src = data['avatar_url']
-            document.getElementById('fullName').textContent = data['name']
-            document.getElementById('bio').textContent = data['bio']
-            document.getElementById('totalFollowers').textContent = data['followers']
-            document.getElementById('totalProjects').textContent = data['public_repos']
-            document.getElementById('githubLink').href = data['html_url']
-            document.getElementById('main').hidden = false
-            document.getElementById('loadingMessage').hidden = true
+            getUserInfo(data)
             getProjectList()
         })
 
-
-
+    function getUserInfo(data) {
+        document.getElementById('profileImage').src = data['avatar_url']
+        document.getElementById('fullName').textContent = data['name']
+        document.getElementById('bio').textContent = data['bio']
+        document.getElementById('totalFollowers').textContent = data['followers']
+        document.getElementById('totalProjects').textContent = data['public_repos']
+        document.getElementById('githubLink').href = data['html_url']
+        document.getElementById('main').hidden = false
+        document.getElementById('loadingMessage').hidden = true
+    }
 
     function getProjectList() {
         var allProjectsList = '';
