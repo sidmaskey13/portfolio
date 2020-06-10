@@ -15,17 +15,19 @@
 <div id="main" class="mainContainer" hidden>
     <div class="row">
         <div class="col-md-4">
-                <img id="profileImage" height="100px" width="100px">
+            <div class="profileInfo">
+                <img id="profileImage" height="100px" width="100px" class="avatar">
                 <h2 id="fullName"></h2>
                 <p id="bio"></p>
-                <p id="totalFollowers"></p>
-            <p id="totalProjects"></p>
+                <i>Followers: <p id="totalFollowers"></p></i>
+                <i>Projects: <p id="totalProjects"></p></i>
 
+            </div>
         </div>
         <div class="col-md-8">
             <b>My Projects</b>
-            <button onclick="buttonClickNext()">Next</button>
-            <button onclick="buttonClickPrev()">Prev</button>
+            <button onclick="buttonClickNext()" class="btn btn-secondary">Next</button>
+            <button onclick="buttonClickPrev()" class="btn btn-secondary">Prev</button>
             <i id="perPage"></i>
             <div id="allProjectsList"></div>
         </div>
@@ -46,12 +48,10 @@
     fetch("https://api.github.com/users/"+userName)
         .then(res => res.json())
         .then(function (data) {
-            let followersCount = data['followers']
-            let followersInfo = `Followers: ${followersCount}`
             document.getElementById('profileImage').src = data['avatar_url']
             document.getElementById('fullName').textContent = data['name']
             document.getElementById('bio').textContent = data['bio']
-            document.getElementById('totalFollowers').textContent = followersInfo
+            document.getElementById('totalFollowers').textContent = data['followers']
             document.getElementById('totalProjects').textContent = data['public_repos']
             document.getElementById('githubLink').href = data['html_url']
             document.getElementById('main').hidden = false
