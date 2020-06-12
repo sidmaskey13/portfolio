@@ -44,7 +44,7 @@
     var a = 1
     var b = perPage
 
-    document.getElementById('perPage').textContent = 'Per Page Show:' + perPage + '|'
+    document.getElementById('perPage').textContent = 'Per Page Show:' + perPage + ' | '
 
     fetch("https://api.github.com/users/" + userName)
         .then(res => res.json())
