@@ -21,7 +21,6 @@
                 <p id="bio"></p>
                 <i>Followers: <p id="totalFollowers"></p></i>
                 <i>Projects: <p id="totalProjects"></p></i>
-
             </div>
         </div>
         <div class="col-md-8">
@@ -29,6 +28,7 @@
             <button onclick="buttonClickNext()" class="btn btn-secondary">Next</button>
             <button onclick="buttonClickPrev()" class="btn btn-secondary">Prev</button>
             <i id="perPage"></i>
+            <i id="nowPage"></i>
             <div id="allProjectsList"></div>
         </div>
     </div>
@@ -41,9 +41,12 @@
     var allProjectsListContainer = document.getElementById("allProjectsList");
     var pageNumber = 1;
     var perPage = 2;
-    document.getElementById('perPage').textContent = 'Per Page Show:' + perPage
-    
-    fetch("https://api.github.com/users/"+userName)
+    var a = 1
+    var b = perPage
+
+    document.getElementById('perPage').textContent = 'Per Page Show:' + perPage + '|'
+
+    fetch("https://api.github.com/users/" + userName)
         .then(res => res.json())
         .then(function (data) {
             getUserInfo(data)
@@ -63,23 +66,37 @@
 
     function getProjectList() {
         var allProjectsList = '';
-        fetch('https://api.github.com/users/'+userName+'/repos?page='+pageNumber+'&per_page='+perPage)
-            .then(res => res.json())
-            .then(function (data) {
+
+    fetch('https://api.github.com/users/'+userName+'/repos?page='+pageNumber+'&per_page='+perPage)
+        .then(res => res.json())
+        .then(function (data) {
+            if(data.length==0) {
+                allProjectsListContainer.innerHTML = 'No Data';
+            } else {
                 for (var i = 0; i < data.length; i++) {
                     allProjectsList += '<a href=' + data[i].html_url + '><div class="card"><div class="cardContainer"><h4><b>' + data[i].name + '</b></h4><span class="w3-tag">'+ data[i].language +'</span></div></div></a>';
                 }
-                allProjectsListContainer.innerHTML = allProjectsList
-            })
+                allProjectsListContainer.innerHTML = allProjectsList;
+                document.getElementById('nowPage').textContent = '('+a+' - '+b+')'
+            }
+        })
+
+
     }
 
     function buttonClickNext() {
         ++pageNumber
+        a=a+perPage
+        b=b+perPage
         getProjectList()
     }
     function buttonClickPrev() {
-        --pageNumber
-        getProjectList()
+        if(pageNumber>1){
+            --pageNumber
+            a=a-perPage
+            b=b-perPage
+            getProjectList()
+        }
     }
 
 
